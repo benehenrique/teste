@@ -1,0 +1,200 @@
+import requests
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
+import concurrent.futures
+
+
+#authenticator.logout('logout','sidebar')
+# intraday data of each asset
+def get_intraday_data(asset):
+    url = f'https://cotacao.b3.com.br/mds/api/v1/DailyFluctuationHistory/{asset}'
+    
+    try:
+        response = requests.get(url)  # Timeout para evitar requisições lentas
+        if response.status_code == 200:
+            return asset, response.json()  # Retorna o ativo e os dados JSON
+        else:
+            print(f"Erro ao acessar os dados de {asset}: {response.status_code}")
+            return asset, None
+    except requests.RequestException as e:
+        print(f"Erro na requisição do ativo {asset}: {e}")
+        return asset, None
+
+# processa os dados intraday da url e organizar em um DataFrame
+
+def process_data(asset_data, asset_code, lista_assets_erro):
+    if asset_data is None:
+        return None
+
+    try:
+        # Extraindo os dados de intraday
+        data = asset_data['TradgFlr']['scty']['lstQtn']
+        
+        # Criando um DataFrame
+        df = pd.DataFrame(data)
+        
+        # Filtrando as colunas necessárias
+        df = df[['dtTm', 'prcFlcn']].copy()
+        
+        # Renomeando as colunas e ajustando o índice
+        df['dtTm'] = pd.to_datetime(df['dtTm'], format='%H:%M:%S').dt.time
+        df = df.set_index('dtTm')
+        
+        # Renomeando a coluna com o código do ativo
+        df.columns = [asset_code]
+        
+        return df
+    except KeyError as e:
+        print(f"Erro ao processar os dados de {asset_code}: {e}")
+        lista_assets_erro.append(asset_code)
+        st.write(f"Erro ao processar os dados de {asset_code}")
+        return None
+
+
+# Função para buscar e processar os dados de um único ativo
+def fetch_and_process_data(asset, lista_assets_erro):
+    asset_code, raw_data = get_intraday_data(asset)
+    return process_data(raw_data, asset_code, lista_assets_erro)
+
+# portfolio data
+def portfolio_request(fund):
+    response = requests.get(st.secrets['portfolio']+f'{fund}')
+    portfolio = pd.DataFrame(response.json())
+    portfolio.pct_aum = portfolio.pct_aum.astype('float')
+    return portfolio
+
+def portfolio_returns(fund, result_df):
+    
+    portfolio = fund
+    ativos_no_portfolio = result_df[result_df.columns.intersection(portfolio['ticker'])] # apenas os ativos que estão no portfólio 
+    pesos = portfolio.set_index('ticker').loc[ativos_no_portfolio.columns, 'pct_aum'] # ativos_no_portfolio é um df com as colunas sendo os tickers
+    portfolio_returns = (ativos_no_portfolio * pesos).sum(axis=1) # soma por linha
+    return portfolio_returns, pesos # return nos pesos p ver o quanto o retorno 
+
+
+
+def pesos(pesos, nome):
+    st.write(f'Dados de {abs(pesos).sum()}% do Portfólio - {nome}')
+
+
+def atualiza():
+    
+    portfolio_gvmi = portfolio_request('gvmi')
+    portfolio_div = portfolio_request('div')
+    portfolio_fia = portfolio_request('fia')
+    portfolio_abs = portfolio_request('abs')
+    
+    # ibov portfolio
+    url = 'https://sistemaswebb3-listados.b3.com.br/indexProxy/indexCall/GetPortfolioDay/eyJsYW5ndWFnZSI6ImVuLXVzIiwicGFnZU51bWJlciI6MSwicGFnZVNpemUiOjEyMCwiaW5kZXgiOiJJQk9WIiwic2VnbWVudCI6IjEifQ=='
+    response = requests.get(url)
+    portfolio_ibov = pd.DataFrame(response.json()['results'])
+    portfolio_ibov = portfolio_ibov.rename(columns={'cod':'ticker',
+                                                'part':'pct_aum'})
+    portfolio_ibov.pct_aum = portfolio_ibov.pct_aum.astype('float') / 100
+        
+    assets = pd.concat([portfolio_gvmi['ticker'], 
+                        portfolio_div['ticker'],
+                        portfolio_fia['ticker'],
+                        portfolio_abs['ticker'],
+                        portfolio_ibov['ticker']]).drop_duplicates().reset_index(drop=True) 
+    # Coletar e processar os dados para cada ativo
+    dfs = []
+    
+    lista_assets_erro = []
+
+    # Usando multithreading para fazer as requisições em paralelo
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        # Fazendo as requisições e processando os dados em paralelo
+        futures = [executor.submit(fetch_and_process_data, asset, lista_assets_erro) for asset in assets]
+        
+        for future in concurrent.futures.as_completed(futures):
+            processed_df = future.result()
+            if processed_df is not None:
+                dfs.append(processed_df)
+
+    # transformando a lista de erros em df após aplicar a funcao
+    df_erro = pd.DataFrame(lista_assets_erro, columns=['Assets sem dados'])
+    df_erro = df_erro[df_erro['Assets sem dados'].str.len() < 8] # tira os bonds
+
+
+    # unindo todos os tickers em 1 dataframe
+    if dfs:
+        result_df = pd.concat(dfs, axis=1)
+        result_df.sort_index(inplace=True)
+    else:
+        st.write('Ainda não há dados!')
+        print("Nenhum dado disponível")
+
+    result_df = result_df.ffill() # considera a ultima variacao qnd for nan
+    
+    returns_gvmi, pesos_gvmi = portfolio_returns(portfolio_gvmi, result_df)
+    returns_div, pesos_div = portfolio_returns(portfolio_div, result_df)
+    returns_fia, pesos_fia = portfolio_returns(portfolio_fia, result_df)
+    returns_abs, pesos_abs = portfolio_returns(portfolio_abs, result_df)
+    returns_ibov, pesos_ibov = portfolio_returns(portfolio_ibov, result_df)
+    
+
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=returns_gvmi.index,
+        y=returns_gvmi.values,
+        mode='lines',
+        name='GVMI',
+        line=dict(color='#1f77b4')
+    ))
+    fig.add_trace(go.Scatter(
+        x=returns_div.index,
+        y=returns_div.values,
+        mode='lines',
+        name='DIV',
+        line=dict(color='#ff7f0e')
+    ))
+    fig.add_trace(go.Scatter(
+        x=returns_fia.index,
+        y=returns_fia.values,
+        mode='lines',
+        name='FIA',
+        line=dict(color='#2ca02c')
+    ))
+    fig.add_trace(go.Scatter(
+        x=returns_abs.index,
+        y=returns_abs.values,
+        mode='lines',
+        name='ABS',
+        line=dict(color='#8c564b')
+    ))
+    fig.add_trace(go.Scatter(
+        x=returns_ibov.index,
+        y=returns_ibov.values,
+        mode='lines',
+        name='IBOV',
+        line=dict(color='#B0B0B0')
+    ))
+    
+    fig.update_layout(
+        title='Intraday Returns',
+        width=2000,  # Largura
+        height=500,  # Altura
+        yaxis=dict(
+            tickformat=".3f",  # Formatação do eixo y
+            ticksuffix="%"
+        ),
+        shapes=[
+            dict(
+                type="line",
+                x0=returns_gvmi.index.min(),  # Ponto inicial no eixo x (mínimo valor do índice)
+                x1=returns_gvmi.index.max(),  # Ponto final no eixo x (máximo valor do índice)
+                y0=0,  # Ponto inicial no eixo y
+                y1=0,  # Ponto final no eixo y (fixo em 0)
+                line=dict(
+                    color="red",
+                    width=0.5
+                )
+            )
+        ]
+    )
+  
+
+    return fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro
