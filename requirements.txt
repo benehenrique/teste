@@ -1,0 +1,6 @@
+pandas
+plotly
+streamlit
+requests
+boto3
+streamlit_authenticator
