@@ -132,7 +132,7 @@ def atualiza():
     returns_abs, pesos_abs = portfolio_returns(portfolio_abs, result_df)
     returns_ibov, pesos_ibov = portfolio_returns(portfolio_ibov, result_df)
 
-    # Função para definir a cor conforme o valor
+    # Função para definir a cor do titulo conforme o valor
     def cor_valor(valor):
         valor_formatado = f"{valor:.3f}".replace('.', ',')  # Formatar o valor e substituir ponto por vírgula
         if valor > 0:
@@ -188,7 +188,7 @@ def atualiza():
     ))
     
     fig.update_layout(
-        title=f'Intraday Returns {returns_ibov.index[-1]} | {titulo}',
+        title=f'Intraday Returns?? {returns_ibov.index[-1]} | {titulo}',
         width=1500,  # Largura
         height=500,  # Altura
         yaxis=dict(
