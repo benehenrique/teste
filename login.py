@@ -45,11 +45,14 @@ elif st.session_state['authentication_status']:
     # Menu lateral para navegar entre as páginas
     menu = st.sidebar.selectbox('Escolha a página', ['Escolha', 'Intraday Returns'], index=['Escolha', 'Intraday Returns'].index(st.session_state.menu))
 
+    if menu == 'Escolha':
+        st.write('Avantgarde Asset Managment')
+
     
 
-    if menu == 'Intraday Returns':
+    elif menu == 'Intraday Returns':
 
-        st.session_state.menu = 'Intraday Returns'
+        #st.session_state.menu = 'Intraday Returns'
         
         import intraday_returns  
         from intraday_returns import atualiza
