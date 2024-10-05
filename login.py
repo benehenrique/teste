@@ -45,13 +45,16 @@ elif st.session_state['authentication_status']:
     # Menu lateral para navegar entre as páginas
     menu = st.sidebar.selectbox('Escolha a página', ['Escolha', 'Intraday Returns'], index=['Escolha', 'Intraday Returns'].index(st.session_state.menu))
 
-    # Botão no sidebar que seleciona 'Intraday Returns'
-    if st.sidebar.button('Atualizar Dados'):
-        selecionar_intraday()
+    
 
     if menu == 'Intraday Returns':
         import intraday_returns  
         from intraday_returns import atualiza
+
+        # Botão no sidebar que seleciona 'Intraday Returns'
+        if st.sidebar.button('Atualizar Dados'):
+            selecionar_intraday()
+        
         
         fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
         st.plotly_chart(fig)
