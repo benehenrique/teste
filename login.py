@@ -33,8 +33,21 @@ elif st.session_state['authentication_status']:
 
     authenticator.logout('logout','sidebar')
 
+    # Define o estado inicial para o selectbox
+    if 'menu' not in st.session_state:
+        st.session_state.menu = 'Escolha'
+
+    # Função para alterar o valor do selectbox
+    def selecionar_intraday():
+        st.session_state.menu = 'Intraday Returns' #atualiza dados
+
+    
     # Menu lateral para navegar entre as páginas
-    menu = st.sidebar.selectbox('Escolha a página', ['Escolha', 'Intraday Returns'])
+    menu = st.sidebar.selectbox('Escolha a página', ['Escolha', 'Intraday Returns'], index=['Escolha', 'Intraday Returns'].index(st.session_state.menu))
+
+    # Botão no sidebar que seleciona 'Intraday Returns'
+    if st.sidebar.button('Atualizar Dados'):
+        selecionar_intraday()
 
     if menu == 'Intraday Returns':
         import intraday_returns  
@@ -53,11 +66,8 @@ elif st.session_state['authentication_status']:
             if df_erro is not None and not df_erro.empty:
                 st.dataframe(df_erro)
                 
-        if st.sidebar.button('Atualizar Dados'):
-            placeholder = st.empty()
-            placeholder.empty()
-            fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
-            st.plotly_chart(fig)
+        #if st.sidebar.button('Atualizar Dados'):
+            # ver um modo de clicar no botao intraday returns
             
         #if not st.session_state.dados_atualizados:
             #fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
