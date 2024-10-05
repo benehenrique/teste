@@ -34,8 +34,8 @@ elif st.session_state['authentication_status']:
     authenticator.logout('logout','sidebar')
 
     # Define o estado inicial para o selectbox
-    #if 'menu' not in st.session_state:
-     #   st.session_state.menu = 'Escolha'
+    if 'menu' not in st.session_state:
+        st.session_state.menu = 'Escolha'
 
     # Função para alterar o valor do selectbox
     def selecionar_intraday():
