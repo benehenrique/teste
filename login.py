@@ -36,10 +36,6 @@ elif st.session_state['authentication_status']:
     # Menu lateral para navegar entre as páginas
     menu = st.sidebar.selectbox('Escolha a página', ['Escolha', 'Intraday Returns'])
 
-    # Inicializa a chave de sessão se não existir
-    if 'dados_atualizados' not in st.session_state:
-        st.session_state.dados_atualizados = False
-
     if menu == 'Intraday Returns':
         import intraday_returns  
         from intraday_returns import atualiza
@@ -47,21 +43,22 @@ elif st.session_state['authentication_status']:
         fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
         st.plotly_chart(fig)
         col1, col2 = st.columns([3, 2])  # Ajuste os tamanhos das colunas se necessário
-        st.session_state.dados_atualizados = True
         with col1:
             st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
             st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
             st.write(f'Dados de {abs(pesos_fia * 100).sum():.2f}% do Portfólio - FIA')
             st.write(f'Dados de {abs(pesos_abs * 100).sum():.2f}% do Portfólio - ABS')
-
         # Exibindo a lista como DataFrame na coluna 2
         with col2:
             if df_erro is not None and not df_erro.empty:
                 st.dataframe(df_erro)
                 
         if st.sidebar.button('Atualizar Dados'):
+            placeholder = st.empty()
+            placeholder.empty()
             fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
             st.plotly_chart(fig)
+            
         #if not st.session_state.dados_atualizados:
             #fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
             #st.plotly_chart(fig)
