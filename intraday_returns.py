@@ -190,7 +190,7 @@ def atualiza():
                 y1=0,  # Ponto final no eixo y (fixo em 0)
                 line=dict(
                     color="red",
-                    width=0.5
+                    width=0.65
                 )
             )
         ]
