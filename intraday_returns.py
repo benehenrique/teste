@@ -133,7 +133,23 @@ def atualiza():
     returns_fia, pesos_fia = portfolio_returns(portfolio_fia, result_df)
     returns_abs, pesos_abs = portfolio_returns(portfolio_abs, result_df)
     returns_ibov, pesos_ibov = portfolio_returns(portfolio_ibov, result_df)
+
+    # Função para definir a cor conforme o valor
+    def cor_valor(valor):
+        valor_formatado = f"{valor:.3f}".replace('.', ',')  # Formatar o valor e substituir ponto por vírgula
+        if valor > 0:
+            return f"<span style='color:green'>{valor_formatado}%</span>"
+        elif valor < 0:
+            return f"<span style='color:red'>{valor_formatado}%</span>"
+        else:
+            return f"<span style='color:black'>{valor_formatado}%</span>"
     
+    # Definindo o título com HTML e cores conforme os valores
+    titulo = f'GVMI:{cor_valor(returns_gvmi.values[-1])} | ' \
+             f'DIV:{cor_valor(returns_div.values[-1])} | ' \
+             f'FIA:{cor_valor(returns_fia.values[-1])} | ' \
+             f'ABS:{cor_valor(returns_abs.values[-1])} | ' \
+             f'IBOV:{cor_valor(returns_ibov.values[-1])}'
 
     fig = go.Figure()
     
@@ -174,8 +190,8 @@ def atualiza():
     ))
     
     fig.update_layout(
-        title='Intraday Returns',
-        width=2000,  # Largura
+        title=f'Intraday Returns {returns_ibov.index[-1]} | {titulo}',
+        width=1500,  # Largura
         height=500,  # Altura
         yaxis=dict(
             tickformat=".3f",  # Formatação do eixo y
