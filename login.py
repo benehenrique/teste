@@ -42,7 +42,7 @@ elif st.session_state['authentication_status']:
         st.session_state.menu = 'Intraday Returns' #atualiza dados
 
     
-    # Menu lateral para navegar entre as páginas
+    # Menu lateral para navegar entre as páginas. Insira o nome dentro das listas p criar mais paginas. O index indica em qual pagina o app deve iniciar
     menu = st.sidebar.selectbox('Escolha a página', ['Intraday Returns'], index=['Intraday Returns'].index(st.session_state.menu))
 
     #if menu == 'Escolha':
@@ -51,8 +51,6 @@ elif st.session_state['authentication_status']:
     
 
     if menu == 'Intraday Returns':
-
-        #st.session_state.menu = 'Intraday Returns'
         
         import intraday_returns  
         from intraday_returns import atualiza
@@ -75,12 +73,6 @@ elif st.session_state['authentication_status']:
             if df_erro is not None and not df_erro.empty:
                 st.dataframe(df_erro)
                 
-        #if st.sidebar.button('Atualizar Dados'):
-            # ver um modo de clicar no botao intraday returns
-            
-        #if not st.session_state.dados_atualizados:
-            #fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
-            #st.plotly_chart(fig)
             
         
 
