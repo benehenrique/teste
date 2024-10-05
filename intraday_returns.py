@@ -188,7 +188,7 @@ def atualiza():
     ))
     
     fig.update_layout(
-        title=f'Intraday Returns?? {returns_ibov.index[-1]} | {titulo}',
+        title=f'Intraday Returns {returns_ibov.index[-1]} | {titulo}',
         width=1500,  # Largura
         height=500,  # Altura
         yaxis=dict(
