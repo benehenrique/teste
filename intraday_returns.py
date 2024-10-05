@@ -143,11 +143,11 @@ def atualiza():
             return f"<span style='color:black'>{valor_formatado}%</span>"
     
     # Definindo o título com HTML e cores conforme os valores
-    titulo = f'GVMI:{cor_valor(returns_gvmi.values[-1])} | ' \
-             f'DIV:{cor_valor(returns_div.values[-1])} | ' \
-             f'FIA:{cor_valor(returns_fia.values[-1])} | ' \
-             f'ABS:{cor_valor(returns_abs.values[-1])} | ' \
-             f'IBOV:{cor_valor(returns_ibov.values[-1])}'
+    titulo = f'GVMI: {cor_valor(returns_gvmi.values[-1])} | ' \
+             f'DIV: {cor_valor(returns_div.values[-1])} | ' \
+             f'FIA: {cor_valor(returns_fia.values[-1])} | ' \
+             f'ABS: {cor_valor(returns_abs.values[-1])} | ' \
+             f'IBOV: {cor_valor(returns_ibov.values[-1])}'
 
     fig = go.Figure()
     
