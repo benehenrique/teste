@@ -48,6 +48,9 @@ elif st.session_state['authentication_status']:
     
 
     if menu == 'Intraday Returns':
+
+        st.session_state.menu = 'Intraday Returns'
+        
         import intraday_returns  
         from intraday_returns import atualiza
 
