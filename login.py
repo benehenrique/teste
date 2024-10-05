@@ -35,7 +35,7 @@ elif st.session_state['authentication_status']:
 
     # Define o estado inicial para o selectbox
     if 'menu' not in st.session_state:
-        st.session_state.menu = 'Escolha'
+        st.session_state.menu = 'Intraday Returns'
 
     # Função para alterar o valor do selectbox
     def selecionar_intraday():
@@ -43,14 +43,14 @@ elif st.session_state['authentication_status']:
 
     
     # Menu lateral para navegar entre as páginas
-    menu = st.sidebar.selectbox('Escolha a página', ['Escolha', 'Intraday Returns'], index=['Escolha', 'Intraday Returns'].index(st.session_state.menu))
+    menu = st.sidebar.selectbox('Escolha a página', ['Intraday Returns'], index=['Intraday Returns'].index(st.session_state.menu))
 
-    if menu == 'Escolha':
-        st.write('Avantgarde Asset Managment')
+    #if menu == 'Escolha':
+     #   st.write('Avantgarde Asset Managment')
 
     
 
-    elif menu == 'Intraday Returns':
+    if menu == 'Intraday Returns':
 
         #st.session_state.menu = 'Intraday Returns'
         
