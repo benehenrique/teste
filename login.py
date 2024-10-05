@@ -43,9 +43,9 @@ elif st.session_state['authentication_status']:
     if menu == 'Intraday Returns':
         import intraday_returns  
         from intraday_returns import atualiza
-
-        def intraday_returns_page():
-            st.plotly_chart(fig)
+        
+        fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
+        st.plotly_chart(fig)
             col1, col2 = st.columns([3, 2])  # Ajuste os tamanhos das colunas se necessário
             st.session_state.dados_atualizados = True
             with col1:
@@ -61,7 +61,8 @@ elif st.session_state['authentication_status']:
 
         if not st.session_state.dados_atualizados:
             fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
-            intraday_returns_page()
+            st.plotly_chart(fig)
+            
         
 
             
