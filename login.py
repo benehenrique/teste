@@ -58,10 +58,13 @@ elif st.session_state['authentication_status']:
         with col2:
             if df_erro is not None and not df_erro.empty:
                 st.dataframe(df_erro)
-
-        if not st.session_state.dados_atualizados:
+                
+        if st.sidebar.button('Atualizar Dados'):
             fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
             st.plotly_chart(fig)
+        #if not st.session_state.dados_atualizados:
+            #fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
+            #st.plotly_chart(fig)
             
         
 
