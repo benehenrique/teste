@@ -64,6 +64,10 @@ def portfolio_request(fund):
     portfolio.pct_aum = portfolio.pct_aum.astype('float')
     return portfolio
 
+# returns request
+#def returns_request(fund):
+    
+
 def portfolio_returns(fund, result_df):
     
     portfolio = fund
@@ -71,12 +75,6 @@ def portfolio_returns(fund, result_df):
     pesos = portfolio.set_index('ticker').loc[ativos_no_portfolio.columns, 'pct_aum'] # ativos_no_portfolio é um df com as colunas sendo os tickers
     portfolio_returns = (ativos_no_portfolio * pesos).sum(axis=1) # soma por linha
     return portfolio_returns, pesos # return nos pesos p ver o quanto o retorno 
-
-
-
-def pesos(pesos, nome):
-    st.write(f'Dados de {abs(pesos).sum()}% do Portfólio - {nome}')
-
 
 def atualiza():
     
