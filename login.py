@@ -62,12 +62,12 @@ elif st.session_state['authentication_status']:
         if not st.session_state.dados_atualizados:
             fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
             intraday_returns_page()
-        if st.sidebar.button('Atualizar Dados'):
+        '''if st.sidebar.button('Atualizar Dados'):
             fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
             intraday_returns_page()
             
     elif menu == 'Escolha':
-        st.session_state.dados_atualizados = False
+        st.session_state.dados_atualizados = False'''
 
             
 
