@@ -61,20 +61,7 @@ elif st.session_state['authentication_status']:
 
         if not st.session_state.dados_atualizados:
             fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
-            st.plotly_chart(fig)
-            col1, col2 = st.columns([3, 2])  # Ajuste os tamanhos das colunas se necessário
-            st.session_state.dados_atualizados = True
-            with col1:
-                st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
-                st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
-                st.write(f'Dados de {abs(pesos_fia * 100).sum():.2f}% do Portfólio - FIA')
-                st.write(f'Dados de {abs(pesos_abs * 100).sum():.2f}% do Portfólio - ABS')
-
-            # Exibindo a lista como DataFrame na coluna 2
-            with col2:
-                if df_erro is not None and not df_erro.empty:
-                    st.dataframe(df_erro)
-            #intraday_returns_page()
+            intraday_returns_page()
         
 
             
