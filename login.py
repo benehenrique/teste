@@ -84,7 +84,9 @@ elif st.session_state['authentication_status']:
             # Atualiza df_table somente se o botão "Atualizar Dados" não foi clicado
             if not atualizar_dados:
                 st.session_state.df_table = intraday_returns.returns_request()
-            
+
+            st.write('Tabela de Rentabilidade')
+            st.markdown("## Rentabilidade")
             st.dataframe(st.session_state.df_table)
 
                 
