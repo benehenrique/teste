@@ -76,11 +76,16 @@ elif st.session_state['authentication_status']:
             if df_erro is not None and not df_erro.empty:
                 st.dataframe(df_erro)
 
+        # Inicializando o estado do DataFrame se ele ainda não existir
+        if 'df_table' not in st.session_state:
+            st.session_state.df_table = intraday_returns.returns_request()
+    
         with col3:
-            # Apenas chama returns_requests se o botão "Atualizar Dados" não foi clicado
+            # Atualiza df_table somente se o botão "Atualizar Dados" não foi clicado
             if not atualizar_dados:
-                df_table = intraday_returns.returns_request()
-                st.dataframe(df_table)
+                st.session_state.df_table = intraday_returns.returns_request()
+            
+            st.dataframe(st.session_state.df_table)
 
                 
             
