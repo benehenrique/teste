@@ -74,8 +74,10 @@ elif st.session_state['authentication_status']:
                 st.dataframe(df_erro)
 
         with col3:
-            df_table = intraday_returns.returns_request()
-            st.dataframe(df_table)
+            # Apenas chama returns_requests se o botão "Atualizar Dados" não foi clicado
+            if not atualizar_dados:
+                df_table = intraday_returns.returns_request()
+                st.dataframe(df_table)
 
                 
             
