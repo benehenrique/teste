@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 
 
-st.set_page_config(page_title='Login', layout = 'wide')
+st.set_page_config(page_title='Avantgarde', layout = 'wide')
 
 # user authentication
 # Configuração das credenciais
@@ -53,14 +53,13 @@ elif st.session_state['authentication_status']:
     if menu == 'Intraday Returns':
         
         import intraday_returns
-        from intraday_returns import atualiza
 
         # Botão no sidebar que seleciona 'Intraday Returns'
         if st.sidebar.button('Atualizar Dados'):
             selecionar_intraday()
         
         
-        fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
+        fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = intraday_returns.atualiza()
         st.plotly_chart(fig)
         col1, col2, col3 = st.columns([2, 1, 5])  # Ajuste os tamanhos das colunas se necessário
         with col1:
