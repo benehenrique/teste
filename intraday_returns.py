@@ -230,28 +230,14 @@ def atualiza():
             return f"<span style='color:black'>{valor_formatado}%</span>"
     
     # Definindo o título com HTML e cores conforme os valores
-    titulo = f'GVMI: {cor_valor(returns_gvmi.values[-1])} | ' \
-             f'DIV: {cor_valor(returns_div.values[-1])} | ' \
-             f'FIA: {cor_valor(returns_fia.values[-1])} | ' \
+    titulo = f'FIA: {cor_valor(returns_fia.values[-1])} | ' \
              f'ABS: {cor_valor(returns_abs.values[-1])} | ' \
+             f'DIV: {cor_valor(returns_div.values[-1])} | ' \
+             f'GVMI: {cor_valor(returns_gvmi.values[-1])} | ' \
              f'IBOV: {cor_valor(returns_ibov.values[-1])}'
 
     fig = go.Figure()
     
-    fig.add_trace(go.Scatter(
-        x=returns_gvmi.index,
-        y=returns_gvmi.values,
-        mode='lines',
-        name='GVMI',
-        line=dict(color='#1f77b4')
-    ))
-    fig.add_trace(go.Scatter(
-        x=returns_div.index,
-        y=returns_div.values,
-        mode='lines',
-        name='DIV',
-        line=dict(color='#ff7f0e')
-    ))
     fig.add_trace(go.Scatter(
         x=returns_fia.index,
         y=returns_fia.values,
@@ -265,6 +251,20 @@ def atualiza():
         mode='lines',
         name='ABS',
         line=dict(color='#8c564b')
+    ))
+    fig.add_trace(go.Scatter(
+        x=returns_div.index,
+        y=returns_div.values,
+        mode='lines',
+        name='DIV',
+        line=dict(color='#ff7f0e')
+    ))
+    fig.add_trace(go.Scatter(
+        x=returns_gvmi.index,
+        y=returns_gvmi.values,
+        mode='lines',
+        name='GVMI',
+        line=dict(color='#1f77b4')
     ))
     fig.add_trace(go.Scatter(
         x=returns_ibov.index,
@@ -285,8 +285,8 @@ def atualiza():
         shapes=[
             dict(
                 type="line",
-                x0=returns_gvmi.index.min(),  # Ponto inicial no eixo x (mínimo valor do índice)
-                x1=returns_gvmi.index.max(),  # Ponto final no eixo x (máximo valor do índice)
+                x0=returns_fia.index.min(),  # Ponto inicial no eixo x (mínimo valor do índice)
+                x1=returns_fia.index.max(),  # Ponto final no eixo x (máximo valor do índice)
                 y0=0,  # Ponto inicial no eixo y
                 y1=0,  # Ponto final no eixo y (fixo em 0)
                 line=dict(
