@@ -131,26 +131,26 @@ def returns_request():
     # Configurar o index como o nome do fundo e o benchmark
     df.set_index(['Benchmark', 'Fundo'], inplace=True)
 
+    # Função para comparar e colorir pares de células
+    def highlight_pair(val1, val2):
+        if val1 > val2:
+            return ['background-color: #228B22', 'background-color: #B22222']  # Val1 maior (verde escuro), Val2 menor (vermelho)
+        elif val1 < val2:
+            return ['background-color: #B22222', 'background-color: #228B22']  # Val1 menor (vermelho), Val2 maior (verde escuro)
+        else:
+            return ['', '']  # Sem cor se forem iguais
+    
+    # Função para aplicar as cores comparando pares de colunas
+    def apply_highlight(row):
+        return highlight_pair(row['Mes Fundo'], row['Mes Benchmark']) + \
+               highlight_pair(row['12M Fundo'], row['12M Benchmark']) + \
+               highlight_pair(row['Ano Fundo'], row['Ano Benchmark']) + \
+               highlight_pair(row['Acumulado Fundo'], row['Acumulado Benchmark'])
+    
+    # Aplicar o estilo ao DataFrame usando style.apply
+    df = df.style.apply(apply_highlight, axis=1)
+
     return df
-
-# Função para comparar e colorir pares de células
-def highlight_pair(val1, val2):
-    if val1 > val2:
-        return ['background-color: #228B22', 'background-color: #B22222']  # Val1 maior (verde escuro), Val2 menor (vermelho)
-    elif val1 < val2:
-        return ['background-color: #B22222', 'background-color: #228B22']  # Val1 menor (vermelho), Val2 maior (verde escuro)
-    else:
-        return ['', '']  # Sem cor se forem iguais
-
-# Função para aplicar as cores comparando pares de colunas
-def apply_highlight(row):
-    return highlight_pair(row['Mes Fundo'], row['Mes Benchmark']) + \
-           highlight_pair(row['12M Fundo'], row['12M Benchmark']) + \
-           highlight_pair(row['Ano Fundo'], row['Ano Benchmark']) + \
-           highlight_pair(row['Acumulado Fundo'], row['Acumulado Benchmark'])
-
-# Aplicar o estilo ao DataFrame usando style.apply
-df = df.style.apply(apply_highlight, axis=1)
     
 
 def portfolio_returns(fund, result_df):
