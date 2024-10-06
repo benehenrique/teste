@@ -54,14 +54,17 @@ elif st.session_state['authentication_status']:
         
         import intraday_returns
 
+        atualizar_dados = st.sidebar.button('Atualizar Dados')
+
         # Botão no sidebar que seleciona 'Intraday Returns'
-        if st.sidebar.button('Atualizar Dados'):
+        if atualizar_dados:
             selecionar_intraday()
-        
         
         fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = intraday_returns.atualiza()
         st.plotly_chart(fig)
+        
         col1, col2, col3 = st.columns([3, 2, 10])  # tamanhos das colunas
+        
         with col1:
             st.write(f'Dados de {abs(pesos_fia * 100).sum():.2f}% do Portfólio - FIA')
             st.write(f'Dados de {abs(pesos_abs * 100).sum():.2f}% do Portfólio - ABS')
