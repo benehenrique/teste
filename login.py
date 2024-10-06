@@ -63,10 +63,11 @@ elif st.session_state['authentication_status']:
         st.plotly_chart(fig)
         col1, col2, col3 = st.columns([3, 2, 10])  # tamanhos das colunas
         with col1:
-            st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
-            st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
             st.write(f'Dados de {abs(pesos_fia * 100).sum():.2f}% do Portfólio - FIA')
             st.write(f'Dados de {abs(pesos_abs * 100).sum():.2f}% do Portfólio - ABS')
+            st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
+            st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
+
         # Exibindo a lista como DataFrame na coluna 2
         with col2:
             if df_erro is not None and not df_erro.empty:
