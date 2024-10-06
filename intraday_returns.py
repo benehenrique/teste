@@ -65,7 +65,92 @@ def portfolio_request(fund):
     return portfolio
 
 # returns request
-#def returns_request(fund):
+def returns_request():
+    df_fundos = []
+
+    fundos = ['avantgarde_fia', 'avantgarde_abs', 'avantgarde_div', 'avantgarde_gvmi']
+    for nome_fundo in fundos:
+        if nome_fundo == 'avantgarde_fia':
+            nome_abreviacao = 'fia'
+            benchmark_name = 'ibx'
+        elif nome_fundo == 'avantgarde_abs':
+            nome_abreviacao = 'abs'
+            benchmark_name = 'cdi'
+        elif nome_fundo == 'avantgarde_div':
+            nome_abreviacao = 'div'
+            benchmark_name = 'ibov'
+        elif nome_fundo == 'avantgarde_gvmi':
+            nome_abreviacao = 'gvmi'
+            benchmark_name = 'ibov'
+            
+    
+        lamina_url = st.secrets['lamina']+f'{nome_fundo}'
+    
+        response = requests.get(lamina_url)
+        # pegar apenas os dados de mes, ano, fund_12m_cumulative_return, index_12m_cumulative_return
+        data = response.json()
+    
+        nome_mes = data['fund_return_last_date'].split(' ')[2]
+        nome_ano = data['fund_return_last_date'].split(' ')[4]
+        retorno_fundo = str(data['fund_cumulative_return']).replace('.',',')
+        retorno_benchmark = str(data['index_cumulative_return']).replace('.',',')
+        retorno_fundo_12m = str(data['fund_12m_cumulative_return']).replace('.',',')
+        retorno_benchmark_12m = str(data['index_12m_cumulative_return']).replace('.',',')
+    
+        # retorno do mes e ano apenas
+        return_table_url = st.secrets['table']+f'{nome_fundo}'
+    
+        response = requests.get(return_table_url)
+    
+        for json_tabela_retorno in response.json():
+            if json_tabela_retorno['ANO'] == int(nome_ano) and json_tabela_retorno['RET (%)'] == 'FUNDO':
+                retorno_fundo_mes = json_tabela_retorno[nome_mes[:3].upper()] # 3 primeiras letras do mes p coletar retorno
+                retorno_fundo_ano = json_tabela_retorno['ANUAL']
+                #retorno_fundo_acum = json_tabela_retorno['ACUM']
+    
+            elif json_tabela_retorno['ANO'] == int(nome_ano) and json_tabela_retorno['RET (%)'] != 'FUNDO':
+                retorno_benchmark_mes = json_tabela_retorno[nome_mes[:3].upper()] # 3 primeiras letras do mes p coletar retorno
+                retorno_benchmark_ano = json_tabela_retorno['ANUAL']
+                #retorno_benchmark_acum = json_tabela_retorno['ACUM']
+    
+        df_fundos.append({
+                    'Fundo': nome_abreviacao.upper(),
+                    'Benchmark': benchmark_name.upper(),
+                    'Mes Fundo': retorno_fundo_mes,
+                    'Mes Benchmark': retorno_benchmark_mes,
+                    '12M Fundo': retorno_fundo_12m,
+                    '12M Benchmark': retorno_benchmark_12m,
+                    'Ano Fundo': retorno_fundo_ano,
+                    'Ano Benchmark': retorno_benchmark_ano,
+                    'Acumulado Fundo': retorno_fundo,
+                    'Acumulado Benchmark': retorno_benchmark
+                })
+            
+    df = pd.DataFrame(df_fundos)
+    
+    # Configurar o index como o nome do fundo e o benchmark
+    df.set_index(['Benchmark', 'Fundo'], inplace=True)
+
+    return df
+
+# Função para comparar e colorir pares de células
+def highlight_pair(val1, val2):
+    if val1 > val2:
+        return ['background-color: #228B22', 'background-color: #B22222']  # Val1 maior (verde escuro), Val2 menor (vermelho)
+    elif val1 < val2:
+        return ['background-color: #B22222', 'background-color: #228B22']  # Val1 menor (vermelho), Val2 maior (verde escuro)
+    else:
+        return ['', '']  # Sem cor se forem iguais
+
+# Função para aplicar as cores comparando pares de colunas
+def apply_highlight(row):
+    return highlight_pair(row['Mes Fundo'], row['Mes Benchmark']) + \
+           highlight_pair(row['12M Fundo'], row['12M Benchmark']) + \
+           highlight_pair(row['Ano Fundo'], row['Ano Benchmark']) + \
+           highlight_pair(row['Acumulado Fundo'], row['Acumulado Benchmark'])
+
+# Aplicar o estilo ao DataFrame usando style.apply
+df = df.style.apply(apply_highlight, axis=1)
     
 
 def portfolio_returns(fund, result_df):
