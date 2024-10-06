@@ -31,7 +31,7 @@ elif st.session_state['authentication_status'] == None:
 
 elif st.session_state['authentication_status']:
 
-    authenticator.logout('logout','sidebar')
+    authenticator.logout('Logout','sidebar')
 
     # Define o estado inicial para o selectbox
     if 'menu' not in st.session_state:
