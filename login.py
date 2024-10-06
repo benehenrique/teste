@@ -52,7 +52,7 @@ elif st.session_state['authentication_status']:
 
     if menu == 'Intraday Returns':
         
-        import intraday_returns  
+        import intraday_returns
         from intraday_returns import atualiza
 
         # Botão no sidebar que seleciona 'Intraday Returns'
@@ -74,7 +74,7 @@ elif st.session_state['authentication_status']:
                 st.dataframe(df_erro)
 
         with col3:
-            df_table = returns_request()
+            df_table = intraday_returns.returns_request()
             st.dataframe(df_table)
 
                 
