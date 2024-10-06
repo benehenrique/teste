@@ -145,7 +145,7 @@ def returns_request():
         return highlight_pair(row['Mes Fundo'], row['Mes Benchmark']) + \
                highlight_pair(row['12M Fundo'], row['12M Benchmark']) + \
                highlight_pair(row['Ano Fundo'], row['Ano Benchmark']) + \
-               highlight_pair(row['Acumulado Fundo'], row['Acumulado Benchmark'])
+               highlight_pair(row['Acum. Fundo'], row['Acum. Benchmark'])
     
     # Aplicar o estilo ao DataFrame usando style.apply
     df = df.style.apply(apply_highlight, axis=1)
