@@ -86,7 +86,6 @@ elif st.session_state['authentication_status']:
                 st.session_state.df_table = intraday_returns.returns_request()
 
             st.write('Tabela de Rentabilidade')
-            st.markdown("## Rentabilidade")
             st.dataframe(st.session_state.df_table)
 
                 
