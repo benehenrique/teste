@@ -92,10 +92,10 @@ def returns_request():
     
         nome_mes = data['fund_return_last_date'].split(' ')[2]
         nome_ano = data['fund_return_last_date'].split(' ')[4]
-        retorno_fundo = str(data['fund_cumulative_return'])+'%'.replace('.',',')
-        retorno_benchmark = str(data['index_cumulative_return'])+'%'.replace('.',',')
-        retorno_fundo_12m = str(data['fund_12m_cumulative_return'])+'%'.replace('.',',')
-        retorno_benchmark_12m = str(data['index_12m_cumulative_return'])+'%'.replace('.',',')
+        retorno_fundo = data['fund_cumulative_return']
+        retorno_benchmark = data['index_cumulative_return']
+        retorno_fundo_12m = data['fund_12m_cumulative_return']
+        retorno_benchmark_12m = data['index_12m_cumulative_return']
     
         # retorno do mes e ano apenas
         return_table_url = st.secrets['table']+f'{nome_fundo}'
@@ -104,13 +104,13 @@ def returns_request():
     
         for json_tabela_retorno in response.json():
             if json_tabela_retorno['ANO'] == int(nome_ano) and json_tabela_retorno['RET (%)'] == 'FUNDO':
-                retorno_fundo_mes = str(json_tabela_retorno[nome_mes[:3].upper()])+'%'.replace('.',',') # 3 primeiras letras do mes p coletar retorno
-                retorno_fundo_ano = str(json_tabela_retorno['ANUAL'])+'%'.replace('.',',')
+                retorno_fundo_mes = json_tabela_retorno[nome_mes[:3].upper()] # 3 primeiras letras do mes p coletar retorno
+                retorno_fundo_ano = json_tabela_retorno['ANUAL']
                 #retorno_fundo_acum = json_tabela_retorno['ACUM']
     
             elif json_tabela_retorno['ANO'] == int(nome_ano) and json_tabela_retorno['RET (%)'] != 'FUNDO':
-                retorno_benchmark_mes = str(json_tabela_retorno[nome_mes[:3].upper()])+'%'.replace('.',',') # 3 primeiras letras do mes p coletar retorno
-                retorno_benchmark_ano = str(json_tabela_retorno['ANUAL'])+'%'.replace('.',',')
+                retorno_benchmark_mes = json_tabela_retorno[nome_mes[:3].upper()] # 3 primeiras letras do mes p coletar retorno
+                retorno_benchmark_ano = json_tabela_retorno['ANUAL']
                 #retorno_benchmark_acum = json_tabela_retorno['ACUM']
     
         df_fundos.append({
@@ -130,7 +130,7 @@ def returns_request():
     
     # Configurar o index como o nome do fundo e o benchmark
     df.set_index(['Benchmark', 'Fundo'], inplace=True)
-
+    
     # Função para comparar e colorir pares de células
     def highlight_pair(val1, val2):
         if val1 > val2:
@@ -149,6 +149,8 @@ def returns_request():
     
     # Aplicar o estilo ao DataFrame usando style.apply
     df = df.style.apply(apply_highlight, axis=1)
+    
+    df = df.format(lambda x: f"{x:.2f}%", subset=pd.IndexSlice[:, :])
 
     return df
     
