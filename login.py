@@ -62,7 +62,7 @@ elif st.session_state['authentication_status']:
         
         fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = atualiza()
         st.plotly_chart(fig)
-        col1, col2 = st.columns([3, 2])  # Ajuste os tamanhos das colunas se necessário
+        col1, col2, col3 = st.columns([2, 1, 5])  # Ajuste os tamanhos das colunas se necessário
         with col1:
             st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
             st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
@@ -72,6 +72,11 @@ elif st.session_state['authentication_status']:
         with col2:
             if df_erro is not None and not df_erro.empty:
                 st.dataframe(df_erro)
+
+        with col3:
+            df_table = returns_request()
+            st.dataframe(df_table)
+
                 
             
         
