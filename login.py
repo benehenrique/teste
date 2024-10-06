@@ -61,7 +61,7 @@ elif st.session_state['authentication_status']:
         
         fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = intraday_returns.atualiza()
         st.plotly_chart(fig)
-        col1, col2, col3 = st.columns([2, 2, 6])  # Ajuste os tamanhos das colunas se necessário
+        col1, col2, col3 = st.columns([3, 2, 8])  # Ajuste os tamanhos das colunas se necessário
         with col1:
             st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
             st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
