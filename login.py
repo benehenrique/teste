@@ -78,14 +78,14 @@ elif st.session_state['authentication_status']:
 
         # Inicializando o estado do DataFrame se ele ainda não existir
         if 'df_table' not in st.session_state:
-            st.session_state.df_table = intraday_returns.returns_request()
+            st.session_state.df_table, datas_cota = intraday_returns.returns_request()
     
         with col3:
             # Atualiza df_table somente se o botão "Atualizar Dados" não foi clicado
             if not atualizar_dados:
-                st.session_state.df_table = intraday_returns.returns_request()
+                st.session_state.df_table, datas_cota = intraday_returns.returns_request()
 
-            st.write('Tabela de Rentabilidade')
+            st.write(f'Tabela de Rentabilidade {datas_cota}')
             st.dataframe(st.session_state.df_table)
 
                 
