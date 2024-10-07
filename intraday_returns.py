@@ -206,7 +206,7 @@ def atualiza():
 
     # transformando a lista de erros em df após aplicar a funcao
     df_erro = pd.DataFrame(lista_assets_erro, columns=['Assets sem dados'])
-    df_erro = df_erro[df_erro['Assets sem dados'].str.len() < 8].reset_index() # tira os bonds
+    df_erro = df_erro[df_erro['Assets sem dados'].str.len() < 8].reset_index(drop=True) # tira os bonds
 
 
     # unindo todos os tickers em 1 dataframe
