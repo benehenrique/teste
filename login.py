@@ -85,7 +85,7 @@ elif st.session_state['authentication_status']:
             if not atualizar_dados:
                 st.session_state.df_table, st.session_state.datas_cota = intraday_returns.returns_request()
 
-            st.write(f'Tabela de Rentabilidade {datas_cota}')
+            st.write(f'Tabela de Rentabilidade {st.session_state.datas_cota}')
             st.dataframe(st.session_state.df_table)
 
                 
