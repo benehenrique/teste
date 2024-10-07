@@ -101,7 +101,7 @@ def returns_request():
         dia_cota = data['fund_return_last_date'].split()[0]
         mes_cota = data['fund_return_last_date'].split()[2][:3] # apenas 3 primeiras letras do mes
 
-        datas_cota.append(f'{nome_abreviacao.upper()} | {dia_cota} de {mes_cota}')
+        datas_cota.append(f'| {nome_abreviacao.upper()}: {dia_cota} de {mes_cota}')
     
         # retorno do mes e ano apenas
         return_table_url = st.secrets['table']+f'{nome_fundo}'
