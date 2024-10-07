@@ -67,7 +67,8 @@ def portfolio_request(fund):
 # returns request
 def returns_request():
     df_fundos = []
-
+    datas_cota = []
+    
     fundos = ['avantgarde_fia', 'avantgarde_abs', 'avantgarde_div', 'avantgarde_gvmi']
     for nome_fundo in fundos:
         if nome_fundo == 'avantgarde_fia':
@@ -96,6 +97,11 @@ def returns_request():
         retorno_benchmark = data['index_cumulative_return']
         retorno_fundo_12m = data['fund_12m_cumulative_return']
         retorno_benchmark_12m = data['index_12m_cumulative_return']
+        # data cota de cada fundo
+        dia_cota = data['fund_return_last_date'].split()[0]
+        mes_cota = data['fund_return_last_date'].split()[2][:3] # apenas 3 primeiras letras do mes
+
+        datas_cota.append(f'{nome_abreviacao.upper()} | {dia_cota} de {mes_cota}')
     
         # retorno do mes e ano apenas
         return_table_url = st.secrets['table']+f'{nome_fundo}'
@@ -152,7 +158,7 @@ def returns_request():
     
     df = df.format(lambda x: f"{x:.2f}%", subset=pd.IndexSlice[:, :])
 
-    return df
+    return df, datas_cota
     
 
 def portfolio_returns(fund, result_df):
@@ -200,7 +206,7 @@ def atualiza():
 
     # transformando a lista de erros em df após aplicar a funcao
     df_erro = pd.DataFrame(lista_assets_erro, columns=['Assets sem dados'])
-    df_erro = df_erro[df_erro['Assets sem dados'].str.len() < 8] # tira os bonds
+    df_erro = df_erro[df_erro['Assets sem dados'].str.len() < 8].reset_index() # tira os bonds
 
 
     # unindo todos os tickers em 1 dataframe
