@@ -78,15 +78,7 @@ elif st.session_state['authentication_status']:
 
         # Inicializando o estado do DataFrame se ele ainda não existir
         if 'df_table' not in st.session_state:
-            result = intraday_returns.returns_request()
-
-            # Verificar os tipos de retorno
-            df_table, datas_cota = result
-            
-            print(type(df_table))  # Deve ser pandas.DataFrame
-            print(type(datas_cota))  # Deve ser list
-
-            #st.session_state.df_table, datas_cota = intraday_returns.returns_request()
+            st.session_state.df_table, datas_cota = intraday_returns.returns_request()
     
         with col3:
             # Atualiza df_table somente se o botão "Atualizar Dados" não foi clicado
