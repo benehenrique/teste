@@ -51,30 +51,32 @@ elif st.session_state['authentication_status']:
     
 
     if menu == 'Intraday Returns':
-        
-        import intraday_returns
-
-        atualizar_dados = st.sidebar.button('Atualizar Dados')
-
-        # Botão no sidebar que seleciona 'Intraday Returns'
-        if atualizar_dados:
-            selecionar_intraday()
-        
-        fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = intraday_returns.atualiza()
-        st.plotly_chart(fig)
-        
-        col1, col2, col3 = st.columns([3, 2, 10])  # tamanhos das colunas
-        
-        with col1:
-            st.write(f'Dados de {abs(pesos_fia * 100).sum():.2f}% do Portfólio - FIA')
-            st.write(f'Dados de {abs(pesos_abs * 100).sum():.2f}% do Portfólio - ABS')
-            st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
-            st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
-
-        # Exibindo a lista como DataFrame na coluna 2
-        with col2:
-            if df_erro is not None and not df_erro.empty:
-                st.dataframe(df_erro)
+        try:
+            import intraday_returns
+    
+            atualizar_dados = st.sidebar.button('Atualizar Dados')
+    
+            # Botão no sidebar que seleciona 'Intraday Returns'
+            if atualizar_dados:
+                selecionar_intraday()
+            
+            fig, pesos_gvmi, pesos_div, pesos_fia, pesos_abs, df_erro = intraday_returns.atualiza()
+            st.plotly_chart(fig)
+            
+            col1, col2, col3 = st.columns([3, 2, 10])  # tamanhos das colunas
+            
+            with col1:
+                st.write(f'Dados de {abs(pesos_fia * 100).sum():.2f}% do Portfólio - FIA')
+                st.write(f'Dados de {abs(pesos_abs * 100).sum():.2f}% do Portfólio - ABS')
+                st.write(f'Dados de {abs(pesos_div * 100).sum():.2f}% do Portfólio - DIV')
+                st.write(f'Dados de {abs(pesos_gvmi * 100).sum():.2f}% do Portfólio - GVMI')
+    
+            # Exibindo a lista como DataFrame na coluna 2
+            with col2:
+                if df_erro is not None and not df_erro.empty:
+                    st.dataframe(df_erro)
+        except:
+            st.write('não há dados')
 
         # Inicializando o estado do DataFrame se ele ainda não existir
         if 'df_table' not in st.session_state:
