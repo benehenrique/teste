@@ -213,11 +213,12 @@ def atualiza():
     if dfs:
         result_df = pd.concat(dfs, axis=1)
         result_df.sort_index(inplace=True)
+
+        result_df = result_df.ffill() # considera a ultima variacao qnd nao tiver dados (nan)
     else:
         st.write('Ainda não há dados!')
         print("Nenhum dado disponível")
 
-    result_df = result_df.ffill() # considera a ultima variacao qnd for nan
     
     returns_gvmi, pesos_gvmi = portfolio_returns(portfolio_gvmi, result_df)
     returns_div, pesos_div = portfolio_returns(portfolio_div, result_df)
